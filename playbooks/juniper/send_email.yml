@@ -1,0 +1,20 @@
+---
+- name: send_email
+  hosts: junos_devices
+  gather_facts: no
+  
+  tasks:
+    - name: send e-mail
+      community.general.mail:
+        host: smtp.gmail.com
+        port: 587
+        username: thanhebooks@gmail.com
+        password: mrik aygo qsmu wzqr
+        to: vominhthanh.lop94@gmail.com
+        subject: Ansible-report
+        subtype: html
+        attach: /mnt/c/Users/LAP15255-local/Desktop/python/Ansible/test/info_port_{{ timestamp }}
+        body:
+        - 'System {{ ansible_hostname }} has been successfully provisioned.'
+        - "{{ lookup ('file', '/mnt/c/Users/LAP15255-local/Desktop/python/Ansible/test/info_port_{{ timestamp }}') | to_yaml }}"
+      delegate_to: localhost

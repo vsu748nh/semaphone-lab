@@ -5,65 +5,50 @@
     - Juniper.junos
   gather_facts: no
   
-    #  vars:
-    #    facts_dir: "/mnt/c/Users/LAP15255-local/Desktop/python/Ansible/test"
-    #    systime: "{{ ansible_date_time.time | replace(':','.') }}"
-    #    timestamp: "{{ ansible_date_time.date }}_{{ systime }}"
+  vars:
+    facts_dir: "/mnt/c/Users/LAP15255-local/Desktop/python/Ansible/test"
+    systime: "{{ ansible_date_time.time | replace(':','.') }}"
+    timestamp: "{{ ansible_date_time.date }}_{{ systime }}"
   tasks:
     - name: setup 
       setup:
         gather_subset:
           - 'min'
 
-    # - name: confirm/create report directory
-    #   file:
-    #     path: "{{ facts_dir }}"
-    #     state: directory
-    #   run_once: yes
-    #   delegate_to: localhost
+    - name: confirm/create report directory
+      file:
+        path: "{{ facts_dir }}"
+        state: directory
+      run_once: yes
+      delegate_to: localhost
 
-
-    # - name: Info port down/up
-    #   junos_command:
-    #     commands: show interfaces terse
-    #   register: junos_port_down_up
 
     - name: Info port description
       junos_command:
         commands: show interfaces descriptions
       register: junos_port_description
 
-
-    # - name: copy show info port
-    #   copy:
-    #     content: "{{ junos_port_description.stdout_lines | to_yaml | }}"
-    #     dest: ./test/info_port_{{ timestamp }}
-
-    # - name: show info port down up
-    #   debug:
-    #     var: junos_port_down_up.stdout_lines
     - name: show info port
       debug:
         msg: "{{ junos_port_description.stdout_lines }}"
 
+    - name: copy show info port
+      copy:
+        content: "{{ junos_port_description.stdout_lines }}"
+        dest: ./test/info_port_{{ timestamp }}
 
-    # - name: show info port down
-    #   debug:
-    #     var: junos_info_port_down.stdout_lines
-
-
-    # - name: send e-mail
-    #   community.general.mail:
-    #     host: smtp.gmail.com
-    #     port: 587
-    #     username: thanhebooks@gmail.com
-    #     password: mrik aygo qsmu wzqr
-    #     to: vominhthanh.lop94@gmail.com
-    #     subject: Ansible-report
-    #     subtype: html
-    #     attach: /mnt/c/Users/LAP15255-local/Desktop/python/Ansible/test/info_port_{{ timestamp }}
-    #     body:
-    #     - 'System {{ ansible_hostname }} has been successfully provisioned.'
-    #     - "{{ lookup ('file', '/mnt/c/Users/LAP15255-local/Desktop/python/Ansible/test/info_port_{{ timestamp }}') | to_yaml }}"
-    #   delegate_to: localhost
+    - name: send e-mail
+      community.general.mail:
+        host: smtp.gmail.com
+        port: 587
+        username: thanhebooks@gmail.com
+        password: mrik aygo qsmu wzqr
+        to: vominhthanh.lop94@gmail.com
+        subject: Ansible-report
+        subtype: html
+        attach: /home/vsu/semaphone-lab/test/info_port_{{ timestamp }}
+        body:
+        - 'System {{ ansible_hostname }} has been successfully provisioned.'
+        - "{{ lookup ('file', '/home/vsu/semaphone-lab/test/info_port_{{ timestamp }}') }}"
+      delegate_to: localhost
 
