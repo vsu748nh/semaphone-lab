@@ -35,7 +35,7 @@
     - name: copy show info port
       copy:
         content: "{{ junos_port_description.stdout_lines }}"
-        dest: ./test/info_port_{{ timestamp }}
+        dest: /home/vsu/semaphone-lab/test/info_port_{{ timestamp }}
 
     - name: send e-mail
       community.general.mail:
